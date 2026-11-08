@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="900" viewBox="0 0 960 900" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+    <style>
+      .node { fill: #eef3fb; stroke: #2f5d9e; stroke-width: 2; }
+      .llm  { fill: #fdf3e2; stroke: #c27a12; stroke-width: 2; }
+      .write{ fill: #fde8e8; stroke: #b42318; stroke-width: 2; }
+      .human{ fill: #efe7fb; stroke: #6a3fb5; stroke-width: 2; }
+      .leaf { fill: #eaf6ee; stroke: #2e7d4f; stroke-width: 2; }
+      .cond { fill: #fff; stroke: #444; stroke-width: 1.5; }
+      .term { fill: #333; }
+      .edge { stroke: #444; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+      .t  { font-size: 15px; font-weight: 600; fill: #111; text-anchor: middle; }
+      .s  { font-size: 12px; fill: #444; text-anchor: middle; }
+      .lbl{ font-size: 12px; fill: #222; font-weight: 600; }
+      .ct { font-size: 12px; fill: #111; text-anchor: middle; font-weight: 600; }
+      .tt { font-size: 13px; fill: #fff; text-anchor: middle; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="960" height="900" fill="#ffffff"/>
+  <text x="480" y="30" class="t" style="font-size:20px">Gem-refund agent (LangGraph.js)</text>
+
+  <!-- START -->
+  <ellipse cx="480" cy="70" rx="48" ry="18" class="term"/>
+  <text x="480" y="75" class="tt">START</text>
+  <path d="M480 88 L480 118" class="edge"/>
+
+  <!-- classify -->
+  <rect x="380" y="120" width="200" height="60" rx="10" class="llm"/>
+  <text x="480" y="146" class="t">classify</text>
+  <text x="480" y="166" class="s">intent from text (LLM in prod)</text>
+  <path d="M480 180 L480 208" class="edge"/>
+
+  <!-- cond: intent -->
+  <polygon points="480,210 560,245 480,280 400,245" class="cond"/>
+  <text x="480" y="242" class="ct">intent?</text>
+  <text x="480" y="257" class="s">edge = code</text>
+
+  <path d="M400 245 L280 245 L280 318" class="edge"/>
+  <text x="300" y="237" class="lbl">missing_purchase</text>
+  <path d="M560 245 L740 245 L740 318" class="edge"/>
+  <text x="640" y="237" class="lbl">other</text>
+
+  <!-- other -->
+  <rect x="640" y="320" width="200" height="60" rx="10" class="leaf"/>
+  <text x="740" y="346" class="t">other</text>
+  <text x="740" y="366" class="s">"Handing you to a human"</text>
+
+  <!-- lookup -->
+  <rect x="170" y="320" width="220" height="74" rx="10" class="node"/>
+  <text x="280" y="344" class="t">lookup</text>
+  <text x="280" y="362" class="s">READ: getPlayerAccount,</text>
+  <text x="280" y="377" class="s">getPurchaseHistory · retry ×3</text>
+  <path d="M280 394 L280 428" class="edge"/>
+
+  <!-- cond: missing / price -->
+  <polygon points="280,430 380,470 280,510 180,470" class="cond"/>
+  <text x="280" y="466" class="ct">missing purchase?</text>
+  <text x="280" y="482" class="s">price from CRM</text>
+
+  <path d="M180 470 L95 470 L95 578" class="edge"/>
+  <text x="103" y="460" class="lbl">none</text>
+  <path d="M280 510 L280 578" class="edge"/>
+  <text x="288" y="548" class="lbl">priceEur &gt; 5</text>
+  <path d="M380 470 L620 470 L620 718" class="edge"/>
+  <text x="430" y="460" class="lbl">priceEur ≤ 5 (auto)</text>
+
+  <!-- noRefund -->
+  <rect x="15" y="580" width="160" height="60" rx="10" class="leaf"/>
+  <text x="95" y="606" class="t">noRefund</text>
+  <text x="95" y="626" class="s">"nothing to refund"</text>
+
+  <!-- approve -->
+  <rect x="195" y="580" width="170" height="88" rx="10" class="human"/>
+  <text x="280" y="604" class="t">approve</text>
+  <text x="280" y="622" class="s">interrupt() ⏸ pause</text>
+  <text x="280" y="638" class="s">checkpointer saves state</text>
+  <text x="280" y="654" class="s">resume: "yes" → approved</text>
+  <path d="M365 640 L440 640 L440 755 L488 755" class="edge"/>
+  <text x="380" y="700" class="lbl">decision</text>
+  <text x="380" y="715" class="s" style="text-anchor:start">(else rejected)</text>
+
+  <!-- refund -->
+  <rect x="490" y="715" width="260" height="84" rx="10" class="write"/>
+  <text x="620" y="744" class="t">refund</text>
+  <text x="620" y="762" class="s">WRITE: issueRefund</text>
+  <text x="620" y="778" class="s">idempotent (purchaseId as key)</text>
+  <text x="620" y="793" class="s">decision "rejected" → no payout</text>
+
+  <!-- END -->
+  <ellipse cx="880" cy="755" rx="44" ry="18" class="term"/>
+  <text x="880" y="760" class="tt">END</text>
+  <path d="M750 755 L834 755" class="edge"/>
+  <path d="M840 350 L880 350 L880 735" class="edge"/>
+  <path d="M95 640 L95 830 L880 830 L880 775" class="edge"/>
+
+  <!-- legend -->
+  <g transform="translate(20,855)">
+    <rect width="16" height="12" class="llm"/><text x="22" y="11" class="s" style="text-anchor:start">LLM in prod</text>
+    <rect x="120" width="16" height="12" class="node"/><text x="142" y="11" class="s" style="text-anchor:start">read tools</text>
+    <rect x="230" width="16" height="12" class="human"/><text x="252" y="11" class="s" style="text-anchor:start">human in the loop</text>
+    <rect x="380" width="16" height="12" class="write"/><text x="402" y="11" class="s" style="text-anchor:start">money write</text>
+    <rect x="500" width="16" height="12" class="leaf"/><text x="522" y="11" class="s" style="text-anchor:start">leaf reply</text>
+    <polygon points="620,6 628,0 636,6 628,12" class="cond"/><text x="642" y="11" class="s" style="text-anchor:start">conditional edge (code)</text>
+  </g>
+</svg>
