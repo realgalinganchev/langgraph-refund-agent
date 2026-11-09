@@ -41,11 +41,7 @@ recursion limit hit -> hand off to a human with a summary
 ## Conversation layer (XState)
 `src/conversation.ts` wraps the graph in an XState v5 machine, one actor per chat:
 
-```
-listening -> working -> awaitingApproval -> resuming -> resolved
-                 \-> listening (unclear, max 2 questions)      \-> escalated
-ASK_FOR_HUMAN from any state -> escalated
-```
+![conversation](conversation.svg)
 
 - **XState decides what is allowed right now.** `APPROVED` does nothing unless an approval is pending; a message sent while the agent is running is ignored; after 2 clarifying questions the chat goes to a human.
 - **LangGraph runs the agent**: classification, CRM lookup with retries, the approval pause and the refund. The graph runs inside a `fromPromise` actor.
