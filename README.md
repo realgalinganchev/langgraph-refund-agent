@@ -3,6 +3,10 @@
 A small LangGraph.js agent with an XState conversation layer, built to learn both hands-on. It handles a support case from a game:
 "I bought gems but they never arrived."
 
+![overview](overview.svg)
+
+The agent graph:
+
 ![graph](graph.svg)
 
 ## What it shows
