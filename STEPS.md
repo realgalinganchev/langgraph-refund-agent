@@ -1,6 +1,6 @@
 # Learning steps
 
-Run after each step: `npx tsx src/agent.ts`
+Run after each step: `npm start` (the graph lives in `src/graph.ts`, the demo in `src/agent.ts`)
 
 ## Concepts in one line each
 - **State**: one object all nodes share. A node returns a partial update; LangGraph merges it.

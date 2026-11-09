@@ -4,8 +4,9 @@
   "description": "Small LangGraph.js agent: conditional routing, human-in-the-loop approval, checkpointing, retries",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsx src/agent.ts"
+    "test": "node --import tsx --test test/agent.test.ts",
+    "start": "tsx src/agent.ts",
+    "typecheck": "tsc"
   },
   "keywords": [],
   "author": "",

@@ -3,20 +3,31 @@
 export type Purchase = { purchaseId: string; gems: number; priceEur: number; delivered: boolean };
 export type Player = { playerId: string; gems: number; banned: boolean; purchases: Purchase[] };
 
-const players: Record<string, Player> = {
-  // Paid, gems never arrived, small amount -> auto refund
-  p1: { playerId: "p1", gems: 120, banned: false, purchases: [{ purchaseId: "pur-101", gems: 500, priceEur: 4.99, delivered: false }] },
-  // Paid, gems never arrived, big amount -> needs human approval
-  p2: { playerId: "p2", gems: 40, banned: false, purchases: [{ purchaseId: "pur-202", gems: 6500, priceEur: 49.99, delivered: false }] },
-  // Gems were delivered -> no refund
-  p3: { playerId: "p3", gems: 900, banned: false, purchases: [{ purchaseId: "pur-303", gems: 500, priceEur: 4.99, delivered: true }] },
-};
+function seed(): Record<string, Player> {
+  return {
+    // Paid, gems never arrived, small amount -> auto refund
+    p1: { playerId: "p1", gems: 120, banned: false, purchases: [{ purchaseId: "pur-101", gems: 500, priceEur: 4.99, delivered: false }] },
+    // Paid, gems never arrived, big amount -> needs human approval
+    p2: { playerId: "p2", gems: 40, banned: false, purchases: [{ purchaseId: "pur-202", gems: 6500, priceEur: 49.99, delivered: false }] },
+    // Gems were delivered -> no refund
+    p3: { playerId: "p3", gems: 900, banned: false, purchases: [{ purchaseId: "pur-303", gems: 500, priceEur: 4.99, delivered: true }] },
+  };
+}
+
+let players = seed();
 
 // Idempotency: purchaseIds we have already refunded.
 const refunded = new Set<string>();
 
-// Set to N to make the next N CRM calls fail (for step 4).
+// Set to N to make the next N CRM calls fail (simulated timeouts).
 export const chaos = { failNextCalls: 0 };
+
+// Fresh data for each test.
+export function resetCrm() {
+  players = seed();
+  refunded.clear();
+  chaos.failNextCalls = 0;
+}
 
 function maybeFail(op: string) {
   if (chaos.failNextCalls > 0) {
